@@ -1,5 +1,5 @@
 # tg_bot_template
-https://t.me/GoshaSpeakBot
+https://t.me/Speakadora_bot
 ### Project structure
 
 ```  
