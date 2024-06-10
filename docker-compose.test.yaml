@@ -1,0 +1,77 @@
+version: "3.9"
+services:
+
+  tg_bot:
+    build: ./src
+    container_name: ${TG_BOT_NAME}_test
+    depends_on:
+      - mongodb
+    restart: always
+    volumes:
+      - ./src/:/src
+    ports:
+      - "8035:80"
+    networks:
+      nginx_network:
+      tg_whisper_bot_net_test:
+        ipv4_address: 172.55.57.11
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  mongodb:
+    image: mongo:4.4.18
+    container_name: ${TG_BOT_NAME}_mongo_test
+    ports:
+      - "27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_LOGIN}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PSWD}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    restart: unless-stopped
+    volumes:
+      - ./mongodb:/data/db
+      - ./mongodb-backup/:/backup
+    networks:
+      tg_whisper_bot_net_test:
+        ipv4_address: 172.55.57.12
+
+  mongo_express:
+    image: mongo-express
+    container_name: ${TG_BOT_NAME}_mongo_express_test
+    restart: unless-stopped
+    ports:
+      - "8034:8081"
+    environment:
+      ME_CONFIG_BASICAUTH: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_LOGIN}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PSWD}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_LOGIN}:${MONGO_PSWD}@172.55.53.12:27017/
+    depends_on:
+      - mongodb
+    networks:
+      tg_whisper_bot_net_test:
+        ipv4_address: 172.55.57.13
+
+  test:
+    build: ./tests
+    container_name: ${TG_BOT_NAME}_test_test
+    environment:
+      - PYTEST_ADDOPTS="--basetemp=/tmp"
+    depends_on:
+      - tg_bot
+    volumes:
+      - ./src/:/src
+      - ./tests/:/tests
+    command: pytest .
+    networks:
+      tg_whisper_bot_net_test:
+        ipv4_address: 172.55.57.14
+
+networks:
+  nginx_network:
+    external: true
+  tg_whisper_bot_net_test:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.55.57.0/24

@@ -1,0 +1,4 @@
+openapi: 3.0.3
+info:
+  title: Swagger - OpenAPI 3.0
+  version: 1.0.0

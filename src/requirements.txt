@@ -1,0 +1,26 @@
+aiohttp
+# uvloop # not working on windows, just comment it in this case
+motor
+aiohttp_cors
+pyTelegramBotAPI
+python-dotenv
+PyYAML
+sentry-sdk
+aiohttp-swagger[perfomance]
+pillow
+jsonpickle
+openai
+langchain
+langchain-community
+langchain-openai
+pydub
+tiktoken
+lxml
+pandas
+faiss-cpu
+langchain-community
+pypdf
+bs4
+html2text
+gigachain
+gigachat

@@ -1,0 +1,4 @@
+pytest
+pyrogram
+pytest-asyncio
+emoji
